@@ -19,6 +19,8 @@
 # Boston, MA 02110-1301, USA.
 #
 
+# When adding a packager here, also add a reference in
+# ConfigManager.defaults.
 from .base import PackagerBase, get_by_name
 from .cmd import TestCommand
 from .pkgconfig import PkgConfig
