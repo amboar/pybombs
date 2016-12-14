@@ -314,6 +314,7 @@ class ConfigManager(object):
         'packagers': ('pip,apt,yumdnf,port,brew,pacman,portage,pkgconfig,cmd', 'Priority of non-source package managers'),
         'keep_builddir': ('', 'When rebuilding, default to keeping the build directory'),
         'elevate_pre_args': (['sudo', '-H'], 'For commands that need elevated privileges, prepend this'),
+        'git-cache': (None, 'Path to git reference repository (git cache)'),
     }
     LAYER_DEFAULT = 0
     LAYER_GLOBALS = 1

@@ -33,7 +33,7 @@ class AutoConfigurator(object):
         Go through a list of config keys, and automatically determine suitable
         values.
         """
-        get_method_name = lambda x: "_auto_config_{0}".format(x)
+        get_method_name = lambda x: "_auto_config_{0}".format(x.replace('-', '_')
         return {k: getattr(self, get_method_name(k))() for k in cfg_keys if hasattr(self, get_method_name(k))}
 
     def _auto_config_makewidth(self):
@@ -41,14 +41,31 @@ class AutoConfigurator(object):
         import multiprocessing
         return multiprocessing.cpu_count()
 
-    # TODO write all of these
     def _auto_config_packagers(self):
         " Automatically set: packagers "
-        return 'pip,apt,yumdnf,port,brew,pacman,portage,pkgconfig,cmd'
+        from pybombs import config_manager
+        from pybombs import packagers
+        available_pkgrs = ",".join(packagers.filter_available_packagers(
+            config_manager.ConfigManager.defaults.get('packagers'),
+            packagers.__dict__.values(),
+            self.log
+        ))
+        return available_pkgrs
 
     def _auto_config_elevate_pre_args(self):
         " Automatically set: elevate_pre_args "
-        return ['sudo', '-H']
+        from pybombs.utils import sysutils
+        if sysutils.which('sudo'):
+            return ['sudo', '-H']
+        if sysutils.which('pkexec'):
+            return ['pkexec']
+        return ''
+
+    def _auto_config_git_cache(self):
+        " Automatically set: git-cache "
+        import os.path
+        from pybombs.commands.git import DEFAULT_GITCACHE_PATH
+        return os.path.join(os.path.expanduser('~'), DEFAULT_GITCACHE_PATH)
 
 class AutoConfig(CommandBase):
     """ Remove a package from this prefix """
