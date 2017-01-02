@@ -154,7 +154,7 @@ def _process_thread(event, args, kwargs):
         ))
     proc = subprocess.Popen(
         args,
-        shell=kwargs.get('shell', False),
+        shell=kwargs.get('shell', isinstance(args, str)),
         env=kwargs.get('env', config_manager.get_active_prefix().env),
         **extra_popen_args
     )
